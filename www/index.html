@@ -33,13 +33,27 @@
             <p class="lead">Simple Florianópolis' public transportation route searcher.</p>
         </div>
 
-        <form action="#" class="form-inline route-search-form">
-            <label class="sr-only" for="location">Location</label>
-            <input type="text" id="location" name="location" class="form-control" placeholder="Location">
-            <button type="submit" class="btn btn-primary">Go!</button>
-        </form>
+        <div class="list-view">
+            <form action="#" class="form-inline route-search-form">
+                <label class="sr-only" for="location">Location</label>
+                <input type="text" id="location" name="location" class="form-control" placeholder="Location">
+                <button type="submit" class="btn btn-primary">Go!</button>
+            </form>
 
-        <div class="routes-panel"></div>
+            <div class="routes-panel"></div>
+        </div>
+
+        <div class="detail-view hide">
+            <button type="button" class="btn pull-right back-trigger">Voltar</button>
+            <div class="container-fluid">
+                <h4 class="route-name-label"></h4>
+                <div class="row">
+                    <div class="col-md-6 stops-panel"></div>
+                    <div class="col-md-6 departures-panel"></div>
+                </div>
+            </div>
+            <button type="button" class="btn pull-right back-trigger">Voltar</button>
+        </div>
     </div>
 
     <script id="no-input-error-tmpl" type="x-tmpl-mustache">
@@ -48,6 +62,65 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <strong>Oops!</strong> É preciso definir um nome de localidade.
+        </div>
+    </script>
+
+    <script id="stops-tmpl" type="x-tmpl-mustache">
+        {{ ^stops }}
+            <div class="alert alert-warning" role="alert">
+                <strong>Oops!</strong> Nenhum registro encontrado.
+            </div>
+        {{ /stops }}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Paradas</h3>
+            </div>
+            <div class="panel-body">
+                <ol>
+                    {{ #stops }}
+                        <li>{{ name }}</li>
+                    {{ /stops }}
+                </ol>
+            </div>
+        </div>
+    </script>
+
+    <script id="departures-tmpl" type="x-tmpl-mustache" >
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Dia de Semana</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-inline unstyled">
+                    {{ #WEEKDAY }}
+                        <li>{{ time }}</li>
+                    {{ /WEEKDAY }}
+                </ul>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Sábado</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-inline unstyled">
+                    {{ #SATURDAY }}
+                        <li>{{ time }}</li>
+                    {{ /SATURDAY }}
+                </ul>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Domingo</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-inline unstyled">
+                    {{ #SUNDAY }}
+                        <li>{{ time }}</li>
+                    {{ /SUNDAY }}
+                </ul>
+            </div>
         </div>
     </script>
 
@@ -71,7 +144,7 @@
                     </thead>
                     <tbody>
                         {{ #routes }}
-                        <tr>
+                        <tr data-route-id="{{ id }}" data-route-name="{{ longName }}">
                             <td>{{ shortName }}</td>
                             <td>{{ longName }}</td>
                         </tr>
