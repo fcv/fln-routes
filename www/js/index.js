@@ -1,49 +1,72 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+$(function($) {
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+    var ROUTES_BY_STOP_NAME_ENDPOINT = 'https://api.appglu.com/v1/queries/findRoutesByStopName/run',
+        USERNAME = 'WKD4N7YMA1uiM8V',
+        PASSWORD = 'DtdTtzMLQlA0hk2C1Yi5pLyVIlAQ68';
 
-        console.log('Received Event: ' + id);
-    }
-};
+    /**
+     * Example of result:
+     * @param routes JSON object following structure:
+     *   `{"id":22,"shortName":"131","longName":"AGRONÔMICA VIA GAMA D'EÇA","lastModifiedDate":"2009-10-26T02:00:00+0000","agencyId":9}`
+     */
+    function renderRoutes(routes) {
+        var template = $('#routes-result-tmpl').html();
+        Mustache.parse(template);
+        var rendered = Mustache.render(template, {
+            routes: routes,
+            empty: routes.length == 0
+        });
+
+        $('.routes-panel')
+            .empty()
+            .append(rendered);
+    };
+
+    function searchRoutesByStopName(name) {
+
+        $.ajax({
+            url: ROUTES_BY_STOP_NAME_ENDPOINT,
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                params: {
+                    stopName: name
+                }
+            }),
+            headers: {
+                'X-AppGlu-Environment': 'staging',
+                // about JS's `btoa` function:
+                // - https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/btoa
+                // - http://caniuse.com/#feat=atob-btoa
+                'Authorization': "Basic " + btoa(USERNAME + ":" + PASSWORD)
+            },
+            success: function(data, textStatus, jqXHR) {
+
+                // Example of returned data format:
+                // {"rows": [{"id":22,"shortName":"131","longName":"AGRONÔMICA VIA GAMA D'EÇA","lastModifiedDate":"2009-10-26T02:00:00+0000","agencyId":9}], "rowsAffected":0}
+                var rows = data.rows;
+                renderRoutes(rows);
+            }
+        });
+    };
+
+    function init() {
+        var $routeSearchForm = $('form.route-search-form');
+
+        $routeSearchForm.submit(function(e) {
+
+            e.preventDefault();
+            var $location = $('[name="location"]', $routeSearchForm),
+                location = $location.val().trim();
+
+            if (!location) {
+                $routeSearchForm.prepend($('#no-input-error-tmpl').html());
+            } else {
+                searchRoutesByStopName('%' + location + '%');
+            }
+        });
+    };
+
+    init();
+});
