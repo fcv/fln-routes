@@ -2,10 +2,10 @@
 <widget id="br.fcv.fln_routes" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Fln Routes</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        Simple Florianópolis' public transportation route searcher.
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
-        PhoneGap Team
+    <author href="https://github.com/fcv">
+        Fabio Cechinel Veronez
     </author>
     <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />

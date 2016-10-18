@@ -1,8 +1,16 @@
-# Hello World PhoneGap Template [![bitHound Score][bithound-img]][bithound-url]
+# Fln Routes
 
-A PhoneGap Hello World template
+Simple Florianópolis' public transportation route searcher.
+
+This project is built over PhoneGap's [hello-world template project](https://github.com/phonegap/phonegap-app-hello-world) and implemented as a single HTML page application using mainly [jQuery](https://jquery.com/), [mustache.js](https://github.com/janl/mustache.js) and [Bootstrap](http://getbootstrap.com/).
 
 ## Usage
+
+This pproject is built and executed using [PhoneGap CLI](http://docs.phonegap.com/getting-started/1-install-phonegap/cli/). It may be executed using `serve` command. Example:
+
+    $ phonegap serve
+
+## On PhoneGap's Hello World project
 
 #### PhoneGap CLI
 

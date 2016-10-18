@@ -1,21 +1,19 @@
 {
-  "name": "phonegap-template-hello-world",
-  "version": "4.0.2",
-  "description": "> A Hello World template built with PhoneGap",
+  "name": "fln-routes",
+  "version": "1.0.0",
+  "description": "Simple Florianópolis' public transportation route searcher",
   "repository": {
     "type": "git",
-    "url": "https://github.com/phonegap/phonegap-app-hello-world.git"
+    "url": "https://github.com/fcv/fln-routes.git"
   },
-  "author": "PhoneGap Team",
+  "author": "Fabio Cechinel Veronez",
   "license": "Apache-2.0.0",
   "keywords": [
     "ecosystem:phonegap",
-    "ecosystem:cordova",
-    "cordova:template",
-    "phonegap:template"
+    "ecosystem:cordova"
   ],
   "bugs": {
-    "url": "https://github.com/phonegap/phonegap-app-hello-world/issues"
+    "url": "https://github.com/fcv/fln-routes/issues"
   },
-  "homepage": "https://github.com/phonegap/phonegap-app-hello-world"
+  "homepage": "https://github.com/fcv/fln-routes"
 }
