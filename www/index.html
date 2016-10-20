@@ -21,6 +21,8 @@
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
 
     <link rel="stylesheet" href="./libs/bootstrap/3.3.7/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="./libs/font-awesome/4.6.3/css/font-awesome.min.css" >
+
     <link rel="stylesheet" href="./css/index.css" >
 
     <title>Fln Routes</title>
@@ -38,7 +40,7 @@
             <form action="#" class="form-inline route-search-form">
                 <label class="sr-only" for="location">Location</label>
                 <input type="text" id="location" name="location" class="form-control" placeholder="Location">
-                <button type="submit" class="btn btn-primary">Go!</button>
+                <button type="submit" class="btn btn-primary">Go! <i class="fa fa-spinner fa-pulse fa-fw loading-indicator"></i></button>
             </form>
 
             <div class="routes-panel"></div>
@@ -48,6 +50,7 @@
             <button type="button" class="btn pull-right back-trigger">Voltar</button>
             <div class="container-fluid">
                 <h4 class="route-name-label"></h4>
+                <i class='fa fa-spinner fa-pulse fa-2x fa-fw loading-indicator loading-indicator'></i>
                 <div class="row">
                     <div class="col-md-6 stops-panel"></div>
                     <div class="col-md-6 departures-panel"></div>

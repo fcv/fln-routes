@@ -5,3 +5,11 @@ form.route-search-form {
 .list-view [data-route-id] {
     cursor: pointer;
 }
+
+.loading-indicator {
+    display: none;
+}
+
+.loading i.loading-indicator {
+    display: inline-block;
+}

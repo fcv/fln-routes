@@ -16,9 +16,15 @@ $(function($) {
                 // - http://caniuse.com/#feat=atob-btoa
                 'Authorization': "Basic " + btoa(USERNAME + ":" + PASSWORD)
             },
-        };
+        },
+        emptyFunc = function() {};
 
-    function searchStopsByRouteId(routeId) {
+    function searchStopsByRouteId(routeId, args) {
+
+        args = $.extend({}, {
+            beforeStart: emptyFunc
+        }, args);
+        var beforeStart = args.beforeStart;
 
         var options = $.extend({}, DEFAULT_AJAX_OPTIONS, {
             url: STOPS_BY_ROUTE_ID_ENDPOINT,
@@ -28,10 +34,16 @@ $(function($) {
                 }
             })
         });
+        beforeStart();
         return $.ajax(options);
     };
 
-    function searchDeparturesByRouteId(routeId) {
+    function searchDeparturesByRouteId(routeId, args) {
+
+        args = $.extend({}, {
+            beforeStart: emptyFunc
+        }, args);
+        var beforeStart = args.beforeStart;
 
         var options = $.extend({}, DEFAULT_AJAX_OPTIONS, {
             url: DEPARTURES_BY_ROUTE_ID_ENDPOINT,
@@ -41,6 +53,7 @@ $(function($) {
                 }
             })
         });
+        beforeStart();
         return $.ajax(options);
     };
 
@@ -92,20 +105,33 @@ $(function($) {
 
         $('.route-name-label').text(name);
 
-        var stopsPromise = searchStopsByRouteId(id);
-        var departuresPromise = searchDeparturesByRouteId(id);
+        var setLoadingState = function() {
+            $('.detail-view').addClass('loading');
+        };
+        var removeLoadingState = function() {
+            $('.detail-view').removeClass('loading');
+        };
 
-        $.when(stopsPromise, departuresPromise).done(function(stopsResult, departuresResult) {
-            // stopResults object format example:
-            // `[{"rows":[{"id":15,"calendar":"WEEKDAY","time":"05:50"}],"rowsAffected":0}, 'statusText', jqXHR]`
-            var stops = stopsResult[0].rows;
-            // departuresResult object format example:
-            // `[{"rows":[{"id":1,"name":"TICEN","sequence":1,"route_id":35}],"rowsAffected":0}, 'statusText', jqXHR]`
-            var departures = departuresResult[0].rows;
-
-            renderStops(stops);
-            renderDepartures(departures);
+        var stopsPromise = searchStopsByRouteId(id, {
+            beforeStart: setLoadingState
         });
+        var departuresPromise = searchDeparturesByRouteId(id, {
+            beforeStart: setLoadingState
+        });
+
+        $.when(stopsPromise, departuresPromise)
+            .done(function(stopsResult, departuresResult) {
+                // stopResults object format example:
+                // `[{"rows":[{"id":15,"calendar":"WEEKDAY","time":"05:50"}],"rowsAffected":0}, 'statusText', jqXHR]`
+                var stops = stopsResult[0].rows;
+                // departuresResult object format example:
+                // `[{"rows":[{"id":1,"name":"TICEN","sequence":1,"route_id":35}],"rowsAffected":0}, 'statusText', jqXHR]`
+                var departures = departuresResult[0].rows;
+
+                renderStops(stops);
+                renderDepartures(departures);
+            })
+            .always(removeLoadingState);
     };
 
     function backToDetailView() {
@@ -133,8 +159,12 @@ $(function($) {
             .append(rendered);
     };
 
-    function searchRoutesByStopName(name) {
+    function searchRoutesByStopName(name, args) {
 
+        args = $.extend({}, {
+            beforeStart: emptyFunc
+        }, args);
+        var beforeStart = args.beforeStart;
         var options = $.extend({}, DEFAULT_AJAX_OPTIONS, {
             url: ROUTES_BY_STOP_NAME_ENDPOINT,
             data: JSON.stringify({
@@ -149,7 +179,9 @@ $(function($) {
                 renderRoutes(rows);
             }
         });
-        $.ajax(options);
+
+        beforeStart();
+        return $.ajax(options)
     };
 
     function init() {
@@ -164,7 +196,15 @@ $(function($) {
             if (!location) {
                 $routeSearchForm.prepend($('#no-input-error-tmpl').html());
             } else {
-                searchRoutesByStopName('%' + location + '%');
+                var promise = searchRoutesByStopName('%' + location + '%', {
+                    beforeStart: function() {
+                        $routeSearchForm.addClass('loading');
+                    }
+                });
+
+                promise.always(function() {
+                    $routeSearchForm.removeClass('loading');
+                });
             }
         });
 
