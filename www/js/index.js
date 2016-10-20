@@ -134,7 +134,7 @@ $(function($) {
             .always(removeLoadingState);
     };
 
-    function backToDetailView() {
+    function backToListView() {
         $('.list-view').removeClass('hide');
         $('.detail-view').addClass('hide');
         renderDepartures([]);
@@ -209,7 +209,7 @@ $(function($) {
         });
 
         $('.detail-view .back-trigger').click(function() {
-            backToDetailView();
+            backToListView();
         });
 
         $('.routes-panel').on('click', '[data-route-id]', function() {
