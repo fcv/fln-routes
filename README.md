@@ -9,6 +9,13 @@ This project is built over PhoneGap's [hello-world template project](https://git
 This pproject is built and executed using [PhoneGap CLI](http://docs.phonegap.com/getting-started/1-install-phonegap/cli/). It may be executed using `serve` command. Example:
 
     $ phonegap serve
+    [phonegap] starting app server...
+    [phonegap] listening on 192.168.0.102:3000
+    [phonegap] 
+    [phonegap] ctrl-c to stop the server
+    [phonegap] 
+
+Application may now be accessed by any Web Browser or by [PhoneGap Develop App](http://docs.phonegap.com/references/developer-app/) from a Mobile device using given address. In the example above, `192.168.0.102:3000`.
 
 ## On PhoneGap's Hello World project
 
