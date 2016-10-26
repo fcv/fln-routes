@@ -17,44 +17,53 @@ $(function($) {
                 'Authorization': "Basic " + btoa(USERNAME + ":" + PASSWORD)
             },
         },
-        emptyFunc = function() {};
+        emptyFunc = function() {},
+        EXECUTE_AJAX_REQUEST_DEFAULT_ARGUMENTS = {
+            beforeStart: emptyFunc
+        };
+
+    /**
+     * Performs AJAX HTTP request using jQuery' $.ajax options defined in `ajaxOptions`
+     * and custom behaviors defined in `args`.
+     *
+     * Defaults ajax options are defines in `DEFAULT_AJAX_OPTIONS` and default arguments
+     * are defined in `EXECUTE_AJAX_REQUEST_DEFAULT_ARGUMENTS`.
+     */
+    function _executeAjaxRequest(args, ajaxOptions) {
+
+        args = $.extend({}, EXECUTE_AJAX_REQUEST_DEFAULT_ARGUMENTS, args);
+        var beforeStart = args.beforeStart;
+
+        var options = $.extend({}, DEFAULT_AJAX_OPTIONS, ajaxOptions);
+
+        beforeStart();
+        return $.ajax(options);
+    };
 
     function searchStopsByRouteId(routeId, args) {
 
-        args = $.extend({}, {
-            beforeStart: emptyFunc
-        }, args);
-        var beforeStart = args.beforeStart;
-
-        var options = $.extend({}, DEFAULT_AJAX_OPTIONS, {
+        var ajaxOptions = {
             url: STOPS_BY_ROUTE_ID_ENDPOINT,
             data: JSON.stringify({
                 params: {
                     routeId: routeId
                 }
             })
-        });
-        beforeStart();
-        return $.ajax(options);
+        };
+        return _executeAjaxRequest(args, ajaxOptions);
     };
 
     function searchDeparturesByRouteId(routeId, args) {
 
-        args = $.extend({}, {
-            beforeStart: emptyFunc
-        }, args);
-        var beforeStart = args.beforeStart;
-
-        var options = $.extend({}, DEFAULT_AJAX_OPTIONS, {
+        var ajaxOptions = {
             url: DEPARTURES_BY_ROUTE_ID_ENDPOINT,
             data: JSON.stringify({
-                params: {
-                    routeId: routeId
+                  params: {
+                      routeId: routeId
                 }
             })
-        });
-        beforeStart();
-        return $.ajax(options);
+        };
+        return _executeAjaxRequest(args, ajaxOptions);
     };
 
     function renderStops(stops) {
@@ -161,27 +170,23 @@ $(function($) {
 
     function searchRoutesByStopName(name, args) {
 
-        args = $.extend({}, {
-            beforeStart: emptyFunc
-        }, args);
-        var beforeStart = args.beforeStart;
-        var options = $.extend({}, DEFAULT_AJAX_OPTIONS, {
+        var ajaxOptions = {
             url: ROUTES_BY_STOP_NAME_ENDPOINT,
             data: JSON.stringify({
                 params: {
                     stopName: name
                 }
-            }),
-            success: function(data, textStatus, jqXHR) {
+            })
+        };
+        var promise = _executeAjaxRequest(args, ajaxOptions)
+            .done(function(data, textStatus, jqXHR) {
                 // Example of returned data format:
                 // {"rows": [{"id":22,"shortName":"131","longName":"AGRONÔMICA VIA GAMA D'EÇA","lastModifiedDate":"2009-10-26T02:00:00+0000","agencyId":9}], "rowsAffected":0}
                 var rows = data.rows;
                 renderRoutes(rows);
-            }
-        });
+            });
 
-        beforeStart();
-        return $.ajax(options)
+        return promise;
     };
 
     function init() {
